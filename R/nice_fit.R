@@ -4,6 +4,11 @@
 #' optionally includes references values. The reference fit values are
 #' based on Schreiber et al. (2006).
 #'
+#' @details Note that `nice_fit` reports the unbiased SRMR through
+#'  [lavaan::lavResiduals()] because the standard SRMR is upwardly
+#'  biased (https://doi.org/10.1007/s11336-016-9552-7) in a noticeable way for
+#'  smaller samples (thanks to James Uanhoro for this change).
+#'
 #' @param model lavaan model object(s) to extract fit indices from
 #' @param model.labels Model labels to use. If a named list is provided
 #' for `model`, default to the names of the list. Otherwise, if the list
@@ -15,8 +20,8 @@
 #'              significance stars (defaults to `FALSE`).
 #' @keywords lavaan structural equation modeling path analysis CFA
 #' @return A dataframe, representing select fit indices (chi2, df, chi2/df,
-#'         p-value of the chi2 test, CFI, TLI, RMSEA and its 90% CI, SRMR,
-#'         AIC, and BIC).
+#'         p-value of the chi2 test, CFI, TLI, RMSEA and its 90% CI,
+#'         unbiased SRMR, AIC, and BIC).
 #' @export
 #' @references Schreiber, J. B. (2017). Update to core reporting practices in
 #' structural equation modeling. *Research in social and administrative pharmacy*,
@@ -132,6 +137,8 @@ nice_fit_internal <- function(fit) {
     "srmr", "aic", "bic"
   )
   x <- x[keep]
+  x_srmr <- lavaan::lavResiduals(fit)$summary["usrmr", 1]
+  x[names(x) == "srmr"] <- x_srmr
   chi2.df <- x$chisq / x$df
   x <- cbind(x[1:2], chi2.df, x[3:length(x)])
   x <- round(x, 3)

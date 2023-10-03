@@ -217,7 +217,7 @@ library(lavaan)
 fit.cfa <- cfa(model.cfa, data = HolzingerSwineford1939)
 fit.sem <- sem(model.sem, data = HolzingerSwineford1939)
 
-list.mods <- list(fit.cfa = fit.cfa, fit.sem = fit.sem)
+list.mods <- list(`CFA model` = fit.cfa, `SEM model` = fit.sem)
 fit_table <- nice_fit(list.mods, nice_table = TRUE)
 ```
 
@@ -265,7 +265,7 @@ side-by-side for demonstration purposes.
 
 
 ```r
-lavaanPlot::lavaanPlot(fit.sem)
+lavaanPlot::lavaanPlot(model = fit.sem)
 ```
 
 ![](paper_files/figure-latex/nice_lavaanPlot-1.pdf)<!-- --> 
